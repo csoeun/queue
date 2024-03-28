@@ -145,6 +145,9 @@
 
                 <div class="info">Людей в очереди:</div>
                 <div class="info">
+                    <p id="peopleCounter">Примерное количество людей:</p>
+                </div>
+                <div class="info">
                     <p>Примерное время окончания:</p>
                 </div>
             </div>
@@ -166,6 +169,19 @@
             return false;
         return true;
     }
+
+    function updatePeopleCounter() {
+        fetch('/people_counter')  // Route to fetch the updated value of people_counter
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('peopleCounter').innerText = "Примерное количество людей: " + data.people_counter;
+            })
+            .catch(error => console.error('Error updating people counter:', error));
+    }
+
+    setInterval(updatePeopleCounter, 30);
+
+    updatePeopleCounter();
 
     changeVideo();
 </script>

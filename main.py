@@ -1,7 +1,8 @@
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response, request, jsonify
 from ultralytics import YOLO
 import cv2
 import os
+
 
 app = Flask(__name__)
 model = YOLO("detect.pt")
@@ -10,14 +11,20 @@ video_folder = "video"
 video_files = os.listdir(video_folder)
 video_paths = [os.path.join(video_folder, file) for file in video_files]
 
+# Initialize people_counter globally
+people_counter = 0
+
 
 def gen_frames(video_path):
+    global people_counter  # Access the global people_counter variable
+
     cap = cv2.VideoCapture(video_path)
     while cap.isOpened():
         success, frame = cap.read()
         if success:
             results = model(frame, stream=True, verbose=False)
 
+            # Reset people_counter for each frame
             people_counter = 0
 
             for r in results:
@@ -34,6 +41,9 @@ def gen_frames(video_path):
 
                         cv2.rectangle(frame, (x1, y1), (x2, y2),
                                       (0, 0, 255), 2)
+                                                
+                        cv2.putText(frame, f"People in picture: {people_counter}",
+                                    [10, 20], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
             _, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
@@ -57,8 +67,14 @@ def video_feed():
 
 @app.route('/')
 def index():
-    return render_template('index.html', video_files=video_files)
+    global people_counter  # Access the global people_counter variable
+    return render_template('index.html', video_files=video_files, cucu=people_counter)
 
+
+@app.route('/people_counter')
+def get_people_counter():
+    global people_counter
+    return jsonify({'people_counter': people_counter})
 
 if __name__ == '__main__':
     app.run(debug=True)
