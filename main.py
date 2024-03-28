@@ -1,7 +1,6 @@
 from flask import Flask, render_template, Response, request
 from ultralytics import YOLO
 import cv2
-import math
 import os
 
 app = Flask(__name__)
@@ -26,7 +25,7 @@ def gen_frames(video_path):
 
                 for box in boxes:
                     cls = int(box.cls[0])
-                    # 0 = человек
+                    # 0 - target
                     if cls == 0:
                         people_counter += 1
 
@@ -36,19 +35,7 @@ def gen_frames(video_path):
                         cv2.rectangle(frame, (x1, y1), (x2, y2),
                                       (0, 0, 255), 2)
 
-                        org = [x1, y1]
-                        font = cv2.FONT_HERSHEY_SIMPLEX
-                        fontScale = 1
-                        color = (255, 0, 0)
-                        thickness = 2
-
-                        # cv2.putText(frame, "person", org,
-                        #             font, fontScale, color, thickness)
-
-            # cv2.putText(frame, f"People in picture: {people_counter}",
-            #             [10, 20], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
-
-            ret, buffer = cv2.imencode('.jpg', frame)
+            _, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
