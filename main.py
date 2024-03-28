@@ -60,12 +60,12 @@ def gen_frames(video_path):
 
 @app.route('/video_feed', methods=['GET', 'POST'])
 def video_feed():
-    if request.method == 'POST':
-        video_index = int(request.form['video_index'])
-        video_path = video_paths[video_index]
-        return Response(gen_frames(video_path), mimetype='multipart/x-mixed-replace; boundary=frame')
-    else:
-        pass
+    video_index = request.args.get('video', default=0, type=int)
+    if video_index < 0 or video_index >= len(video_paths):
+        video_index = 0  
+    video_path = video_paths[video_index]
+    return Response(gen_frames(video_path), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 @app.route('/')
 def index():

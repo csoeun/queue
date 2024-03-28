@@ -97,15 +97,15 @@
 </head>
 <body>
     <nav>
-        <form action="/video_feed" method="POST">
+        <div id="videoForm" >
             <label for="videoSelect">Выберите видео:</label>
-            <select name="video_index" id="videoSelect">
+            <select name="video_index" id="videoSelect" onchange="changeVideo()">
                 {% for file_name in video_files %}
                     <option value="{{ loop.index0 }}">{{ file_name }}</option>
                 {% endfor %}
             </select>
             <button type="submit">Просмотреть</button>
-        </form>
+        </div>
     </nav>
     
 
@@ -133,6 +133,7 @@
         </div>
     </div>
     <div class="image-container">
+        <img id="videoFrame" src="" alt="">
     </div>
 </div>
 
@@ -142,4 +143,12 @@
 </div>
 
 </body>
+<script>
+    function changeVideo() {
+        var videoSelect = document.getElementById("videoSelect");
+        var videoIndex = videoSelect.value;
+        var videoFrame = document.getElementById("videoFrame");
+        videoFrame.src = "/video_feed?video=" + videoIndex;
+    }
+</script>
 </html>
