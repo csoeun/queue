@@ -34,10 +34,7 @@ def gen_frames(video_path):
                         x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
 
                         cv2.rectangle(frame, (x1, y1), (x2, y2),
-                                      (255, 0, 255), 3)
-
-                        # confidence = math.ceil((box.conf[0]*100))/100
-                        # print("Person found, Confidence ->", confidence)
+                                      (0, 0, 255), 2)
 
                         org = [x1, y1]
                         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -45,11 +42,11 @@ def gen_frames(video_path):
                         color = (255, 0, 0)
                         thickness = 2
 
-                        cv2.putText(frame, "person", org,
-                                    font, fontScale, color, thickness)
+                        # cv2.putText(frame, "person", org,
+                        #             font, fontScale, color, thickness)
 
-            cv2.putText(frame, f"People in picture: {people_counter}",
-                        [10, 20], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+            # cv2.putText(frame, f"People in picture: {people_counter}",
+            #             [10, 20], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()

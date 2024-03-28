@@ -91,6 +91,7 @@
         }
 
         input {
+            outline: none;
             background-color: #ffffff;
             border: none;
             width: 75%;
@@ -129,23 +130,22 @@
 
                 <div class="info">Максимальная длина очереди</div>
                 <div class="time-value">
-                    <input placeholder="Кол-во">
+                    <input placeholder="Кол-во" min="1" onkeypress="return isNumberKey(event)">
                 </div>
 
                 <div class="info">Максимальное время ожидания (мин)</div>
                 <div class="time-value">
-                    <input placeholder="Время">
+                    <input placeholder="Время" min="1" onkeypress="return isNumberKey(event)">
                 </div>
 
                 <div class="info">Среднее время заказа (мин)</div>
                 <div class="time-value">
-                    <input placeholder="Время">
+                    <input placeholder="Время" min="1" onkeypress="return isNumberKey(event)">
                 </div>
 
                 <div class="info">Людей в очереди:</div>
                 <div class="info">
                     <p>Примерное время окончания:</p>
-                    <p style="font-weight: bold;">⠀20 минут</p>
                 </div>
             </div>
         </div>
@@ -158,6 +158,13 @@
         var videoIndex = videoSelect.value;
         var videoFrame = document.getElementById("videoFrame");
         videoFrame.src = "/video_feed?video=" + videoIndex;
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
     }
 
     changeVideo();
