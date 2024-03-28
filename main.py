@@ -1,14 +1,17 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 from ultralytics import YOLO
 import cv2
 import math
+import os
 
 app = Flask(__name__)
 model = YOLO("detect.pt") 
 
-video_path = "video/file1.mp4"  
+video_folder = "video"
+video_files = os.listdir(video_folder)
+video_paths = [os.path.join(video_folder, file) for file in video_files]
 
-def gen_frames(): 
+def gen_frames(video_path): 
     cap = cv2.VideoCapture(video_path)
     while True:
         success, frame = cap.read()  
@@ -55,13 +58,18 @@ def gen_frames():
 
     cap.release()
 
-@app.route('/video_feed')
+@app.route('/video_feed', methods=['GET', 'POST'])
 def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    if request.method == 'POST':
+        video_index = int(request.form['video_index'])
+        video_path = video_paths[video_index]
+        return Response(gen_frames(video_path), mimetype='multipart/x-mixed-replace; boundary=frame')
+    else:
+        pass
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', video_files=video_files)
 
 if __name__ == '__main__':
     app.run(debug=True)

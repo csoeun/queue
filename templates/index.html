@@ -97,8 +97,17 @@
 </head>
 <body>
     <nav>
-
+        <form action="/video_feed" method="POST">
+            <label for="videoSelect">Выберите видео:</label>
+            <select name="video_index" id="videoSelect">
+                {% for file_name in video_files %}
+                    <option value="{{ loop.index0 }}">{{ file_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Просмотреть</button>
+        </form>
     </nav>
+    
 
 <div class="container">
     <div class="row">
@@ -124,7 +133,6 @@
         </div>
     </div>
     <div class="image-container">
-        <img id="video-stream" src="{{ url_for('video_feed') }}" alt="Video Stream">
     </div>
 </div>
 
