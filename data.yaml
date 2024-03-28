@@ -1,0 +1,6 @@
+path: 'C:/development/sirius/dataset/'
+train: 'C:/development/sirius/dataset/train/images'
+val: 'C:/development/sirius/dataset/val/images'
+
+names: 
+  0: 'target'

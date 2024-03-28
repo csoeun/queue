@@ -1,0 +1,5 @@
+# yolo custom
+yolo task=detect mode=train model=yolov8s.pt imgsz=1048,586 data=data.yaml epochs=10 batch=8 name=result
+
+# yolo nano
+yolo task=detect mode=train model=yolov8n.pt imgsz=1048,586 data=data.yaml epochs=15 batch=8 name=result_s
