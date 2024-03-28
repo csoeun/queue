@@ -5,20 +5,19 @@ import math
 import os
 
 app = Flask(__name__)
-model = YOLO("detect.pt") 
+model = YOLO("detect.pt")
 
 video_folder = "video"
 video_files = os.listdir(video_folder)
 video_paths = [os.path.join(video_folder, file) for file in video_files]
 
-def gen_frames(video_path): 
+
+def gen_frames(video_path):
     cap = cv2.VideoCapture(video_path)
-    while True:
-        success, frame = cap.read()  
-        if not success:
-            break
-        else:
-            results = model(frame, stream=True)
+    while cap.isOpened():
+        success, frame = cap.read()
+        if success:
+            results = model(frame, stream=True, verbose=False)
 
             people_counter = 0
 
@@ -34,10 +33,11 @@ def gen_frames(video_path):
                         x1, y1, x2, y2 = box.xyxy[0]
                         x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
 
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                        cv2.rectangle(frame, (x1, y1), (x2, y2),
+                                      (255, 0, 255), 3)
 
-                        confidence = math.ceil((box.conf[0]*100))/100
-                        print("Person found, Confidence --->", confidence)
+                        # confidence = math.ceil((box.conf[0]*100))/100
+                        # print("Person found, Confidence ->", confidence)
 
                         org = [x1, y1]
                         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -55,14 +55,18 @@ def gen_frames(video_path):
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+        else:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            continue
 
     cap.release()
+
 
 @app.route('/video_feed', methods=['GET', 'POST'])
 def video_feed():
     video_index = request.args.get('video', default=0, type=int)
     if video_index < 0 or video_index >= len(video_paths):
-        video_index = 0  
+        video_index = 0
     video_path = video_paths[video_index]
     return Response(gen_frames(video_path), mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -70,6 +74,7 @@ def video_feed():
 @app.route('/')
 def index():
     return render_template('index.html', video_files=video_files)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

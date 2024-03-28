@@ -12,7 +12,7 @@ while True:
     peopleCounter = 0
 
     success, img = cap.read()
-    results = model(img, stream=True)
+    results = model(img, stream=True, verbose=False)
 
     for r in results:
         boxes = r.boxes
