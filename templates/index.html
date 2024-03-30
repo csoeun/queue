@@ -151,6 +151,7 @@
         var videoIndex = videoSelect.value;
         var videoFrame = document.getElementById("videoFrame");
         videoFrame.src = "/video_feed?video=" + videoIndex;
+        updatePeopleCounter();
     }
 
     function isNumberKey(evt) {
@@ -180,11 +181,7 @@
         } else {
             document.getElementById('decision').innerText = "Вердикт: лучше идти"
         }
-    }
-
-    setInterval(updatePeopleCounter, 30);
-
-    updatePeopleCounter();
+    }    
 
     changeVideo();
 </script>
