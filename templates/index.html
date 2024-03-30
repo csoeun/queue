@@ -96,6 +96,22 @@
             color: white;
             font-weight: bold;
         }
+
+        button{
+            transition: 0.5s;
+            background-color: #696969;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 150px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            transition: 0.5s;
+            background-color: #7f7f7f;
+        }
     </style>
 </head>
 
@@ -132,9 +148,11 @@
 
                 <div class="info">Среднее время заказа (мин)</div>
                 <div class="time-value">
-                    <input value="3" id="time-order" placeholder="Время" min="1" onkeypress="return isNumberKey(event)">
+                    <input value="1" id="time-order" placeholder="Время" min="1" onkeypress="return isNumberKey(event)">
                 </div>
-
+                <br>
+                <button onclick="refreshParams()">Обновить параметры</button>
+                <br>
                 <div id="peopleCounter" class="info">Людей в очереди: 0</div>
                 <div id="end-time" class="info">Примерное время окончания: 0 мин</div>
                 <div id="decision" class="info">Вердикт: лучше идти</div>
@@ -182,7 +200,10 @@
         }
     }
 
-    setInterval(updatePeopleCounter, 30);
+    // function refreshParams() {
+    // }
+
+    setInterval(updatePeopleCounter, 1500);
 
     updatePeopleCounter();
 
